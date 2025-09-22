@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DETALLE DE MISIÓN OFICIAL</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+            color: #000;
+            line-height: 1.4;
+        }
+
+        .documento {
+            width: 8.5in;
+            height: 11in;
+            margin: 0 auto;
+            padding: 0.75in;
+            background-color: white;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .encabezado-oficial {
+            text-align: center;
+            margin-bottom: 0.2in;
+        }
+
+        .encabezado-imagen {
+            height: 1in;
+            margin: 0 auto;
+        }
+
+        .titulo-documento {
+            font-family: 'Times New Roman', serif;
+            font-size: 14pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 0.1in 0 0.2in;
+            text-transform: uppercase;
+        }
+
+        .seccion {
+            margin-bottom: 0.15in;
+        }
+
+        .campo {
+            margin-bottom: 0.08in;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .campo label {
+            font-weight: bold;
+            min-width: 1.8in;
+            text-transform: uppercase;
+            font-size: 12pt;
+        }
+
+        .campo input, .campo textarea {
+            flex-grow: 1;
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 0.03in 0.05in;
+            text-transform: uppercase;
+            font-size: 12pt;
+            height: 0.25in;
+        }
+
+        .tabla-mision {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.15in 0;
+            font-size: 8pt;
+            page-break-inside: avoid;
+        }
+
+        .tabla-mision, .tabla-mision th, .tabla-mision td {
+            border: 1px solid #000;
+        }
+
+        .tabla-mision th {
+            background-color: #f0f0f0;
+            padding: 0.05in;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 08pt;
+        }
+
+        .tabla-mision td {
+            padding: 0.03in;
+            height: 0.3in;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0.5in;
+            right: 0.5in;
+            font-size: 8pt;
+            text-align: right;
+            width: calc(100% - 1in);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.1in;
+            margin: 0.2in 0;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #005baa;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background-color: #003d7a;
+        }
+
+        @media print {
+            body {
+                background: none;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
+                padding: 0;
+            }
+
+            .documento {
+                padding: 0.75in;
+                width: 8.5in;
+                height: 11in;
+                margin: 0;
+            }
+
+            .form-actions, button {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="documento" id="documentoPrincipal">
+        <div class="encabezado-oficial">
+            <!-- Imagen en formato base64 - Reemplaza con tu imagen real -->
+            
+            <div class="titulo-documento">DETALLE DE MISIÓN OFICIAL</div>
+        </div>
+
+        <form id="visitForm">
+            <div class="seccion">
+                <div class="campo">
+                    <label for="unidadAdministrativa">UNIDAD ADMINISTRATIVA:</label>
+                    <input type="text" id="unidadAdministrativa" required />
+                </div>
+                <div class="campo">
+                    <label for="departamento">DEPARTAMENTO:</label>
+                    <input type="text" id="departamento" required />
+                </div>
+                <div class="campo">
+                    <label for="nombreFuncionario">NOMBRE DEL FUNCIONARIO:</label>
+                    <input type="text" id="nombreFuncionario" required style="width: 2.2in;" />
+                    <label for="cedula" style="min-width: 0.5in; margin-left: 0.05in;">CÉDULA:</label>
+                    <input type="text" id="cedula" required style="width: 0.8in;" />
+                    <label for="planilla" style="min-width: 0.6in; margin-left: 0.05in;">PLANILLA:</label>
+                    <input type="text" id="planilla" style="width: 0.7in;" />
+                </div>
+                <div class="campo">
+                    <label for="lugarMision">LUGAR DE LA MISIÓN:</label>
+                    <input type="text" id="lugarMision" required />
+                </div>
+            </div>
+
+            <div class="seccion">
+                <div style="display: flex; flex-direction: column; gap: 0.1in; margin-bottom: 0.1in;">
+                    <div style="display: flex; align-items: center;">
+                        <div style="font-weight: bold; min-width: 0.3in; text-transform: uppercase; font-size: 9pt;">DE:</div>
+                        <div style="display: flex; gap: 0.1in; align-items: center;">
+                            <div>
+                                <div style="font-size: 8pt;">HORA</div>
+                                <input type="time" id="horaEntrada" required style="width: 0.9in;" />
+                            </div>
+                            <div>
+                                <div style="font-size: 8pt;">DÍA</div>
+                                <input type="number" id="diaInicio" min="1" max="31" required style="width: 0.5in;" />
+                            </div>
+                            <div>
+                                <div style="font-size: 8pt;">MES</div>
+                                <input type="number" id="mesInicio" min="1" max="12" required style="width: 0.5in;" />
+                            </div>
+                            <div>
+                                <div style="font-size: 8pt;">AÑO</div>
+                                <input type="number" id="anioInicio" required style="width: 0.6in;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="font-weight: bold; min-width: 0.3in; text-transform: uppercase; font-size: 9pt;">AL:</div>
+                        <div style="display: flex; gap: 0.1in; align-items: center;">
+                            <div>
+                                <div style="font-size: 8pt;">HORA</div>
+                                <input type="time" id="horaSalida" required style="width: 0.9in;" />
+                            </div>
+                            <div>
+                                <div style="font-size: 8pt;">DÍA</div>
+                                <input type="number" id="diaFin" min="1" max="31" required style="width: 0.5in;" />
+                            </div>
+                            <div>
+                                <div style="font-size: 8pt;">MES</div>
+                                <input type="number" id="mesFin" min="1" max="12" required style="width: 0.5in;" />
+                            </div>
+                            <div>
+                                <div style="font-size: 8pt;">AÑO</div>
+                                <input type="number" id="anioFin" required style="width: 0.6in;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="seccion">
+                <table class="tabla-mision">
+                    <thead>
+                        <tr>
+                            <th colspan="6">LUGAR DE LA MISIÓN</th>
+                        </tr>
+                        <tr>
+                            <th rowspan="2">DÍA</th>
+                            <th rowspan="2">MES</th>
+                            <th colspan="2">HORA</th>
+                            <th rowspan="2">DESCRIPCIÓN DE LA MISIÓN</th>
+                            <th rowspan="2">FIRMA CONSTANCIA</th>
+                        </tr>
+                        <tr>
+                            <th>ENTRADA</th>
+                            <th>SALIDA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-body"></tbody>
+                </table>
+                <div style="font-size: 8pt; font-style: italic; text-align: center; margin-top: 0.05in;">
+                    Nota: Este detalle de misión debe estar sellado y firmado del lugar donde se realiza la misión.
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" onclick="guardarVisita()"><i class="fas fa-save"></i> Guardar</button>
+                <button type="button" onclick="generarPDF()"><i class="fas fa-file-pdf"></i> Generar PDF</button>
+                <button type="button" onclick="eliminarRegistro()"><i class="fas fa-trash-alt"></i> Eliminar registro</button>
+            </div>
+        </form>
+
+        <div class="footer">
+            www.meduca.gob.pa | Tel: 509-5316
+        </div>
+    </div>
+    <script>
+        // Esperamos a que todas las librerías estén cargadas
+        document.addEventListener('DOMContentLoaded', function () {
+            const tablaBody = document.getElementById('tabla-body');
+            for (let i = 0; i < 9; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><input type="number" min="1" max="31" style="width:100%;border:none;padding:2px;height:0.3in;"></td>
+                    <td><input type="number" min="1" max="12" style="width:100%;border:none;padding:2px;height:0.3in;"></td>
+                    <td><input type="time" style="width:100%;border:none;padding:2px;height:0.3in;"></td>
+                    <td><input type="time" style="width:100%;border:none;padding:2px;height:0.3in;"></td>
+                    <td><textarea style="width:100%;border:none;padding:2px;height:0.3in;resize:none;"></textarea></td>
+                    <td style="text-align:center;">${i === 0 ? '___________________' : ''}</td>
+                `;
+                tablaBody.appendChild(row);
+            }
+        });
+
+        function guardarVisita() {
+            const requiredFields = [
+                'unidadAdministrativa', 'departamento', 'nombreFuncionario',
+                'cedula', 'lugarMision', 'horaEntrada', 'diaInicio',
+                'mesInicio', 'anioInicio', 'horaSalida', 'diaFin',
+                'mesFin', 'anioFin'
+            ];
+
+            for (const fieldId of requiredFields) {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    alert(`Por favor complete el campo: ${field.previousElementSibling?.textContent || fieldId}`);
+                    field.focus();
+                    return;
+                }
+            }
+
+            const filasTabla = [];
+            const rows = document.querySelectorAll('#tabla-body tr');
+
+            rows.forEach(row => {
+                filasTabla.push({
+                    dia: row.querySelector('input[type="number"]:nth-of-type(1)').value,
+                    mes: row.querySelector('input[type="number"]:nth-of-type(2)').value,
+                    horaEntrada: row.querySelector('input[type="time"]:nth-of-type(1)').value,
+                    horaSalida: row.querySelector('input[type="time"]:nth-of-type(2)').value,
+                    descripcion: row.querySelector('textarea').value.trim().toUpperCase()
+                });
+            });
+
+            const visita = {
+                unidadAdministrativa: document.getElementById("unidadAdministrativa").value.trim().toUpperCase(),
+                departamento: document.getElementById("departamento").value.trim().toUpperCase(),
+                nombreFuncionario: document.getElementById("nombreFuncionario").value.trim().toUpperCase(),
+                cedula: document.getElementById("cedula").value.trim().toUpperCase(),
+                planilla: document.getElementById("planilla").value.trim().toUpperCase(),
+                lugarMision: document.getElementById("lugarMision").value.trim().toUpperCase(),
+                horarioInicio: {
+                    hora: document.getElementById("horaEntrada").value,
+                    dia: document.getElementById("diaInicio").value,
+                    mes: document.getElementById("mesInicio").value,
+                    anio: document.getElementById("anioInicio").value
+                },
+                horarioFin: {
+                    hora: document.getElementById("horaSalida").value,
+                    dia: document.getElementById("diaFin").value,
+                    mes: document.getElementById("mesFin").value,
+                    anio: document.getElementById("anioFin").value
+                },
+                tablaDatos: filasTabla
+            };
+
+            console.log("Datos guardados:", visita);
+            alert("Visita registrada correctamente");
+        }
+
+        function generarPDF() {
+            // Verificamos que las librerías estén cargadas
+            if (!window.jspdf || !window.html2canvas) {
+                alert("Las librerías necesarias no se han cargado correctamente. Por favor recarga la página.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'in',
+                format: 'letter'
+            });
+
+            const element = document.getElementById('documentoPrincipal');
+            const botones = document.querySelector('.form-actions');
+            if (botones) botones.style.display = 'none';
+
+            // Mostramos mensaje de carga
+            const loadingMessage = document.createElement('div');
+            loadingMessage.style.position = 'fixed';
+            loadingMessage.style.top = '50%';
+            loadingMessage.style.left = '50%';
+            loadingMessage.style.transform = 'translate(-50%, -50%)';
+            loadingMessage.style.backgroundColor = 'rgba(0,0,0,0.7)';
+            loadingMessage.style.color = 'white';
+            loadingMessage.style.padding = '20px';
+            loadingMessage.style.borderRadius = '5px';
+            loadingMessage.style.zIndex = '9999';
+            loadingMessage.textContent = 'Generando PDF, por favor espere...';
+            document.body.appendChild(loadingMessage);
+
+            // Opciones para html2canvas
+            const options = {
+                scale: 2,
+                useCORS: true,
+                logging: true,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight,
+                backgroundColor: '#FFFFFF'
+            };
+
+            html2canvas(element, options).then(canvas => {
+                document.body.removeChild(loadingMessage);
+
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 8.5;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                doc.save('mision_oficial.pdf');
+
+                if (botones) botones.style.display = "flex";
+            }).catch(error => {
+                console.error('Error al generar PDF:', error);
+                document.body.removeChild(loadingMessage);
+                alert('Error al generar el PDF: ' + error.message);
+                if (botones) botones.style.display = "flex";
+            });
+        }
+
+        function eliminarRegistro() {
+            if (!confirm("¿Está seguro que desea eliminar todos los datos ingresados?")) return;
+
+            document.getElementById("visitForm").reset();
+
+            const rows = document.querySelectorAll('#tabla-body tr');
+            rows.forEach(row => {
+                row.querySelectorAll('input, textarea').forEach(field => field.value = '');
+            });
+
+            alert("Todos los datos han sido eliminados.");
+        }
+    </script>
+</body>
+</html>
